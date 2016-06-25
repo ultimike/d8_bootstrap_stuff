@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var less = require('gulp-less');
 var watch = require('gulp-watch');
 var shell = require('gulp-shell');
@@ -7,6 +6,8 @@ var notify = require('gulp-notify');
 var browserSync = require('browser-sync');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
+var autoprefixer = require('gulp-autoprefixer');
+var cleancss = require('gulp-clean-css');
 var fs = require("fs");
 var config = null;
 
@@ -31,6 +32,8 @@ gulp.task('less', function () {
   return gulp.src('./less/style.less')
     .pipe(sourcemaps.init())
     .pipe(less())
+    .pipe(autoprefixer())
+    .pipe(cleancss())
     .pipe(sourcemaps.write('./maps'))
     .pipe(gulp.dest('./css'))
     .pipe(notify({
@@ -67,16 +70,6 @@ gulp.task('cssjs:reload', ['less', 'compress'], function() {
 });
 
 /**
- * Task when css or js files are changed: recompress the css and js in
- * parallel, then when those are both done reload the browser.
- * Assumes drupal css and js aggregation is off and doesn't clear drupal
- * caches, which makes this run much faster.
- */
-gulp.task('twig:reload', ['drush:cc'], function() {
-  browserSync.reload();
-});
-
-/**
  * Defines a task that triggers a Drush cache rebuild.
  */
 gulp.task('drush:cc', function () {
@@ -93,6 +86,16 @@ gulp.task('drush:cc', function () {
       message: "Drupal CSS/JS caches cleared.",
       onLast: true
     }));
+});
+
+/**
+ * Task when css or js files are changed: recompress the css and js in
+ * parallel, then when those are both done reload the browser.
+ * Assumes drupal css and js aggregation is off and doesn't clear drupal
+ * caches, which makes this run much faster.
+ */
+gulp.task('twig:reload', ['drush:cc'], function() {
+  browserSync.reload();
 });
 
 /**

@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var less = require('gulp-less');
+var sass = require('gulp-sass');
 var watch = require('gulp-watch');
 var shell = require('gulp-shell');
 var notify = require('gulp-notify');
@@ -28,17 +28,17 @@ loadConfig();
 /**
  * This task generates CSS from all LESS files and compresses them down.
  */
-gulp.task('less', function () {
-  return gulp.src('./less/style.less')
+gulp.task('sass', function () {
+  return gulp.src('./sass/style.scss')
     .pipe(sourcemaps.init())
-    .pipe(less())
+    .pipe(sass())
     .pipe(autoprefixer())
     .pipe(cleancss())
     .pipe(sourcemaps.write('./maps'))
     .pipe(gulp.dest('./css'))
     .pipe(notify({
-      title: "LESS Compiled",
-      message: "All LESS files have been recompiled to CSS.",
+      title: "Sass Compiled",
+      message: "All Sass files have been recompiled to CSS.",
       onLast: true
     }));
 });
@@ -65,7 +65,7 @@ gulp.task('compress', function() {
  * Assumes drupal css and js aggregation is off and doesn't clear drupal
  * caches, which makes this run much faster.
  */
-gulp.task('cssjs:reload', ['less', 'compress'], function() {
+gulp.task('cssjs:reload', ['sass', 'compress'], function() {
   browserSync.reload();
 });
 
@@ -110,7 +110,7 @@ gulp.task('watch', function() {
   });
 
   // watch less and js and clear drupal theme cache on change, reload browsers
-  gulp.watch(['less/**/*.less', 'js-src/**/*.js'], ['cssjs:reload']);
+  gulp.watch(['sass/**/*.scss', 'js-src/**/*.js'], ['cssjs:reload']);
 
   // If user has not specified an override, assume twig changes don't need cache reload
   if ((config !== null && config.local.twig.useCache) || config === null) {

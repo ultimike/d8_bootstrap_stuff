@@ -29,7 +29,7 @@ loadConfig();
  * This task generates CSS from all LESS files and compresses them down.
  */
 gulp.task('sass', function () {
-  return gulp.src('./sass/style.scss')
+  return gulp.src('./scss/style.scss')
     .pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(autoprefixer())
@@ -110,7 +110,7 @@ gulp.task('watch', function() {
   });
 
   // watch less and js and clear drupal theme cache on change, reload browsers
-  gulp.watch(['sass/**/*.scss', 'js-src/**/*.js'], ['cssjs:reload']);
+  gulp.watch(['scss/**/*.scss', 'js-src/**/*.js'], ['cssjs:reload']);
 
   // If user has not specified an override, assume twig changes don't need cache reload
   if ((config !== null && config.local.twig.useCache) || config === null) {
